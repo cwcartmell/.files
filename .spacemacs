@@ -387,7 +387,7 @@ you should place your code here."
 
   (add-hook
    'ess-r-mode
-   (define-key evil-normal-state-map (kbd "SPC me")
+   (define-key evil-normal-state-map (kbd "SPC ma")
      (defun assignment ()
        (interactive)
        (insert " <- ")
@@ -406,7 +406,8 @@ you should place your code here."
   ;; Add rules for tabs.
   (setq-default indent-tabs-mode nil)
   (setq-default standard-indent 2)
-  (add-hook 'python-mode (setq tab-width 4))
+  (setq-default python-tab-width 4)
+  (setq ess-default-style 'Rstudio)
   ;; Add eol rulers.
   (setq-default fill-column 80)
   (add-hook 'prog-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
