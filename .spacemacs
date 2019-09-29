@@ -61,8 +61,8 @@ values."
    dotspacemacs-additional-packages '(polymode
                                       poly-R
                                       poly-noweb
-                                      poly-markdown)
-   ;; A list of packages that cannot be updated.
+                                      poly-markdown
+                                      ess-R-data-view)
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
    dotspacemacs-excluded-packages '()
@@ -267,7 +267,7 @@ values."
    ;;                       text-mode
    ;;   :size-limit-kb 1000)
    ;; (default nil)
-   dotspacemacs-line-numbers t 
+   dotspacemacs-line-numbers t
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
    dotspacemacs-folding-method 'evil
@@ -316,8 +316,9 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
-
-;;; R modes
+  ;; Set default theme.
+  (setq-default dotspacemacs-themes '(solarized-dark, solarized-light))
+  ;; R modes
   (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
   (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
   (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
@@ -329,48 +330,92 @@ you should place your code here."
 
   (global-company-mode t)
   (global-hl-line-mode 1) ; Enable/Disable current line highlight
-  (setq-default fill-column 99)
   (setq-default auto-fill-mode t)
   ;; ESS shortcuts
-  (spacemacs/set-leader-keys "mdt" 'ess-r-devtools-test-package)
-  (spacemacs/set-leader-keys "mrl" 'ess-eval-line)
-  (spacemacs/set-leader-keys "mrr" 'ess-eval-region)
-  (spacemacs/set-leader-keys "mdb" 'ess-r-devtools-build-package)
-  (spacemacs/set-leader-keys "mdd" 'ess-r-devtools-document-package)
-  (spacemacs/set-leader-keys "mdl" 'ess-r-devtools-load-package)
-  (spacemacs/set-leader-keys "mdc" 'ess-r-devtools-check-package)
-  (spacemacs/set-leader-keys "mdp" 'ess-r-package-mode)
-  (add-hook 'ess-mode-hook
-            (lambda ()
-              (ess-toggle-underscore nil)))
-  (define-key evil-normal-state-map (kbd "SPC mm")
-            (lambda ()
-              (interactive)
-              (insert " %>% ")
-              (evil-insert-state)
-              ))
+  (defun ess-mm-keys
+      ()
+    ;; Default shortcuts from the docs.
+    ;; Supposed to "send knitr/sweave chunk and keep buffer focused"
+    ;; (spacemacs/set-leader-keys "mcc" 'ess-)
+    ;; Supposed to "send knitr/sweave chunk and switch to REPL in insert mode"
+    ;; (spacemacs/set-leader-keys "mcC" 'ess-)
+    ;; Supposed to "send knitr/sweave chunk and step to next chunk"
+    ;; (spacemacs/set-leader-keys "mcC" 'ess-)
+    ;; Supposed to "mark knitr/sweave chunk around point"
+    ;; (spacemacs/set-leader-keys "mcC" 'ess-)
+    ;; Supposed to "next knitr/sweave chunk"
+    ;; (spacemacs/set-leader-keys "mcC" 'ess-)
+    ;; Supposed to ""previous knitr/sweave chunk
+    ;; (spacemacs/set-leader-keys "mcC" 'ess-)
+    (spacemacs/set-leader-keys "msb" 'ess-eval-buffer)
+    (spacemacs/set-leader-keys "msB" 'ess-eval-buffer-and-go)
+    (spacemacs/set-leader-keys "msd" 'ess-eval-line-and-step)
+    (spacemacs/set-leader-keys "msD"
+      'ess-eval-region-or-function-or-paragraph-and-step)
+    (spacemacs/set-leader-keys "msi" 'ess-R)
+    (spacemacs/set-leader-keys "msl" 'ess-eval-line)
+    (spacemacs/set-leader-keys "msL" 'ess-eval-line-and-go)
+    (spacemacs/set-leader-keys "msr" 'ess-eval-region)
+    (spacemacs/set-leader-keys "msR" 'ess-eval-region-and-go)
+    (spacemacs/set-leader-keys "mst" 'ess-eval-function)
+    (spacemacs/set-leader-keys "msT" 'ess-eval-region-and-go)
+    ;; (spacemacs/set-leader-keys "C-j" 'ess-)
+    ;; (spacemacs/set-leader-keys "C-k" 'ess-)
+    (spacemacs/set-leader-keys "mdb" 'ess-r-devtools-build-package)
+    (spacemacs/set-leader-keys "mdd" 'ess-r-devtools-document-package)
+    (spacemacs/set-leader-keys "mdl" 'ess-r-devtools-load-package)
+    (spacemacs/set-leader-keys "mdc" 'ess-r-devtools-check-package)
+    (spacemacs/set-leader-keys "mdt" 'ess-r-devtools-test-package)
+    (spacemacs/set-leader-keys "mdp" 'ess-r-package-mode)
+    )
+  (add-hook 'ess-mode (ess-mm-keys))
+  (defun ess-r-mm-keys
+      ()
+    (spacemacs/set-leader-keys "mhi"
+      'ess-R-describe-object-at-point-commands)
+    (spacemacs/set-leader-keys "mht" 'ess-R-dv-ctable)
+    )
+  (add-hook 'ess-r-mode (ess-r-mm-keys))
+  (add-hook
+   'ess-r-mode
+     ;; Default shortcuts from the docs.
+     (define-key evil-normal-state-map (kbd "SPC mm")
+       (defun pipe ()
+         (interactive)
+         (insert " %>% ")
+         (evil-insert-state))))
+
+  (add-hook
+   'ess-r-mode
+   (define-key evil-normal-state-map (kbd "SPC me")
+     (defun assignment ()
+       (interactive)
+       (insert " <- ")
+       (evil-insert-state)
+       )))
+  ;; (add-hook 'ess-mode-hook
+  ;;           (lambda ()
+  ;;             (ess-toggle-underscore nil)))
   ;; Move lines around
-  (spacemacs/set-leader-keys "MS" 'move-text-line-up)
-  (spacemacs/set-leader-keys "MT" 'move-text-line-down)
-  (setq-default whitespace-mode t)
-  (setq-default whitespace-style (quote (spaces tabs newline space-mark tab-mark newline-mark)))
-  (setq-default whitespace-display-mappings
-        ;; all numbers are Unicode codepoint in decimal. try (insert-char 182 ) to see it
-        '(
-          (space-mark 32 [183] [46]) ; 32 SPACE, 183 MIDDLE DOT 「·」, 46 FULL STOP 「.」
-          (newline-mark 10 [9226 10]) ; 10 LINE FEED
-          (tab-mark 9 [9655 9] [92 9]) ; 9 TAB, 9655 WHITE RIGHT-POINTING TRIANGLE 「▷」
-          ))
+  ;; (spacemacs/set-leader-keys "MS" 'move-text-line-up)
+  ;; (spacemacs/set-leader-keys "MT" 'move-text-line-down)
   (setq-default TeX-view-program-selection
-         '((output-pdf "PDF Viewer")))
+                '((output-pdf "PDF Viewer")))
   (setq-default TeX-view-program-list
-        '(("PDF Viewer" "okular %o")))
+                '(("PDF Viewer" "okular %o" "sumatra")))
+  ;; Add rules for tabs.
   (setq-default indent-tabs-mode nil)
-  (setq-default tab-width 2)
-   ;; (setq org-default-notes-file (concat org-directory "/agenda/notes.org"))
-   (add-hook 'prog-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
-   (add-hook 'text-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
-   (add-hook 'markdown-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
+  (setq-default standard-indent 2)
+  (add-hook 'python-mode (setq tab-width 4))
+  ;; Add eol rulers.
+  (setq-default fill-column 80)
+  (add-hook 'prog-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
+  (add-hook 'text-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
+  (add-hook 'markdown-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
+  (add-hook 'python-mode-hook 'spacemacs/toggle-fill-column-indicator-on
+            (set-fill-column 79))
+  (add-hook 'ess-mode-hook 'spacemacs/toggle-fill-column-indicator-on
+            (set-fill-column 80))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -383,7 +428,8 @@ you should place your code here."
  '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
-    (poly-R poly-noweb poly-markdown polymode racket-mode faceup unfill mwim helm-company helm-c-yasnippet fuzzy company-statistics company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete zenburn-theme zen-and-art-theme white-sand-theme underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme toxi-theme tao-theme tangotango-theme tango-plus-theme tango-2-theme sunny-day-theme sublime-themes subatomic256-theme subatomic-theme spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme seti-theme reverse-theme rebecca-theme railscasts-theme purple-haze-theme professional-theme planet-theme phoenix-dark-pink-theme phoenix-dark-mono-theme organic-green-theme omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme naquadah-theme mustang-theme monokai-theme monochrome-theme molokai-theme moe-theme minimal-theme material-theme majapahit-theme madhat2r-theme lush-theme light-soap-theme jbeans-theme jazz-theme ir-black-theme inkpot-theme heroku-theme hemisu-theme hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme gandalf-theme flatui-theme flatland-theme farmhouse-theme exotica-theme espresso-theme dracula-theme django-theme darktooth-theme autothemer darkokai-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized clues-theme cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme badwolf-theme apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme alect-themes afternoon-theme yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic smeargle orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download mmm-mode markdown-toc markdown-mode magit-gitflow magit-popup htmlize helm-gitignore gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md evil-magit magit transient git-commit with-editor ess-smart-equals ess-R-data-view ctable ess julia-mode spinner evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state iedit evil-exchange evil-ediff evil-args evil-anzu anzu evil undo-tree adaptive-wrap ace-jump-helm-line ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smartparens restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile projectile pkg-info epl helm-mode-manager helm-make helm-flx helm-descbinds helm-ag helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-unimpaired evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-escape goto-chg eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent ace-window ace-link avy async))))
+    (poly-R poly-noweb poly-markdown polymode racket-mode faceup unfill mwim helm-company helm-c-yasnippet fuzzy company-statistics company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete zenburn-theme zen-and-art-theme white-sand-theme underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme toxi-theme tao-theme tangotango-theme tango-plus-theme tango-2-theme sunny-day-theme sublime-themes subatomic256-theme subatomic-theme spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme seti-theme reverse-theme rebecca-theme railscasts-theme purple-haze-theme professional-theme planet-theme phoenix-dark-pink-theme phoenix-dark-mono-theme organic-green-theme omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme naquadah-theme mustang-theme monokai-theme monochrome-theme molokai-theme moe-theme minimal-theme material-theme majapahit-theme madhat2r-theme lush-theme light-soap-theme jbeans-theme jazz-theme ir-black-theme inkpot-theme heroku-theme hemisu-theme hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme gandalf-theme flatui-theme flatland-theme farmhouse-theme exotica-theme espresso-theme dracula-theme django-theme darktooth-theme autothemer darkokai-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized clues-theme cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme badwolf-theme apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme alect-themes afternoon-theme yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic smeargle orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download mmm-mode markdown-toc markdown-mode magit-gitflow magit-popup htmlize helm-gitignore gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md evil-magit magit transient git-commit with-editor ess-smart-equals ess-R-data-view ctable ess julia-mode spinner evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state iedit evil-exchange evil-ediff evil-args evil-anzu anzu evil undo-tree adaptive-wrap ace-jump-helm-line ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smartparens restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile projectile pkg-info epl helm-mode-manager helm-make helm-flx helm-descbinds helm-ag helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-unimpaired evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-escape goto-chg eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent ace-window ace-link avy async)))
+ '(standard-indent 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
