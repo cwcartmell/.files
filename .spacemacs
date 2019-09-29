@@ -382,6 +382,7 @@ you should place your code here."
      (define-key evil-normal-state-map (kbd "SPC mm")
        (defun pipe ()
          (interactive)
+         (forward-char)
          (insert " %>% ")
          (evil-insert-state))))
 
@@ -390,6 +391,7 @@ you should place your code here."
    (define-key evil-normal-state-map (kbd "SPC ma")
      (defun assignment ()
        (interactive)
+       (forward-char)
        (insert " <- ")
        (evil-insert-state)
        )))
