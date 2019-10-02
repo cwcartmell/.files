@@ -331,73 +331,71 @@ you should place your code here."
   (global-company-mode t)
   (global-hl-line-mode 1) ; Enable/Disable current line highlight
   (setq-default auto-fill-mode t)
-  ;; ESS shortcuts
-  (defun ess-mm-keys
-      ()
-    ;; Default shortcuts from the docs.
-    ;; Supposed to "send knitr/sweave chunk and keep buffer focused"
-    ;; (spacemacs/set-leader-keys "mcc" 'ess-)
-    ;; Supposed to "send knitr/sweave chunk and switch to REPL in insert mode"
-    ;; (spacemacs/set-leader-keys "mcC" 'ess-)
-    ;; Supposed to "send knitr/sweave chunk and step to next chunk"
-    ;; (spacemacs/set-leader-keys "mcC" 'ess-)
-    ;; Supposed to "mark knitr/sweave chunk around point"
-    ;; (spacemacs/set-leader-keys "mcC" 'ess-)
-    ;; Supposed to "next knitr/sweave chunk"
-    ;; (spacemacs/set-leader-keys "mcC" 'ess-)
-    ;; Supposed to ""previous knitr/sweave chunk
-    ;; (spacemacs/set-leader-keys "mcC" 'ess-)
-    (spacemacs/set-leader-keys "msb" 'ess-eval-buffer)
-    (spacemacs/set-leader-keys "msB" 'ess-eval-buffer-and-go)
-    (spacemacs/set-leader-keys "msd" 'ess-eval-line-and-step)
-    (spacemacs/set-leader-keys "msD"
-      'ess-eval-region-or-function-or-paragraph-and-step)
-    (spacemacs/set-leader-keys "msi" 'ess-R)
-    (spacemacs/set-leader-keys "msl" 'ess-eval-line)
-    (spacemacs/set-leader-keys "msL" 'ess-eval-line-and-go)
-    (spacemacs/set-leader-keys "msr" 'ess-eval-region)
-    (spacemacs/set-leader-keys "msR" 'ess-eval-region-and-go)
-    (spacemacs/set-leader-keys "mst" 'ess-eval-function)
-    (spacemacs/set-leader-keys "msT" 'ess-eval-region-and-go)
-    ;; (spacemacs/set-leader-keys "C-j" 'ess-)
-    ;; (spacemacs/set-leader-keys "C-k" 'ess-)
-    (spacemacs/set-leader-keys "mdb" 'ess-r-devtools-build-package)
-    (spacemacs/set-leader-keys "mdd" 'ess-r-devtools-document-package)
-    (spacemacs/set-leader-keys "mdl" 'ess-r-devtools-load-package)
-    (spacemacs/set-leader-keys "mdc" 'ess-r-devtools-check-package)
-    (spacemacs/set-leader-keys "mdt" 'ess-r-devtools-test-package)
-    (spacemacs/set-leader-keys "mdp" 'ess-r-package-mode)
-    )
-  (add-hook 'ess-mode (ess-mm-keys))
-  (defun ess-r-mm-keys
-      ()
-    (spacemacs/set-leader-keys "mhi"
-      'ess-R-describe-object-at-point-commands)
-    (spacemacs/set-leader-keys "mht" 'ess-R-dv-ctable)
-    )
-  (add-hook 'ess-r-mode (ess-r-mm-keys))
-  (add-hook
-   'ess-r-mode
-     ;; Default shortcuts from the docs.
-     (define-key evil-normal-state-map (kbd "SPC mm")
-       (defun pipe ()
-         (interactive)
-         (forward-char)
-         (insert " %>% ")
-         (evil-insert-state))))
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sb"
+    'ess-eval-buffer)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sB"
+    'ess-eval-buffer-and-go)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sd"
+    'ess-eval-line-and-step)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sD"
+    'ess-eval-region-or-function-or-paragraph-and-step)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "si" 'ess-R)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sl" 'ess-eval-line)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sL"
+    'ess-eval-line-and-go)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sr" 'ess-eval-region)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sR"
+    'ess-eval-region-and-go)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "st" 'ess-eval-function)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sT"
+    'ess-eval-region-and-go)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "C-j" 'ess-)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "C-k" 'ess-)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "db"
+    'ess-r-devtools-build-package)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "dd"
+    'ess-r-devtools-document-package)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "dl"
+    'ess-r-devtools-load-package)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "dc"
+    'ess-r-devtools-check-package)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "dt"
+    'ess-r-devtools-test-package)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "dp" 'ess-r-package-mode)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "hi"
+    'ess-R-describe-object-at-point-commands)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "ht" 'ess-R-dv-ctable)
+  (defun pipe ()
+    (interactive)
+    (forward-char)
+    (insert " %>% ")
+    (evil-insert-state))
+  (defun assignment ()
+    (interactive)
+    (forward-char)
+    (insert " <- ")
+    (evil-insert-state))
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "a" 'assignment)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "m" 'pipe)
+  ;; (add-hook
+  ;;  'ess-r-mode
+  ;;  ;; Default shortcuts from the docs.
+  ;;  (define-key evil-normal-state-map (kbd "SPC mm")
+  ;;    (defun pipe ()
+  ;;      (interactive)
+  ;;      (forward-char)
+  ;;      (insert " %>% ")
+  ;;      (evil-insert-state))))
 
-  (add-hook
-   'ess-r-mode
-   (define-key evil-normal-state-map (kbd "SPC ma")
-     (defun assignment ()
-       (interactive)
-       (forward-char)
-       (insert " <- ")
-       (evil-insert-state)
-       )))
-  ;; (add-hook 'ess-mode-hook
-  ;;           (lambda ()
-  ;;             (ess-toggle-underscore nil)))
+  ;; (add-hook
+  ;;  'ess-r-mode
+  ;;  (define-key evil-normal-state-map (kbd "SPC ma")
+  ;;    (defun assignment ()
+  ;;      (interactive)
+  ;;      (forward-char)
+  ;;      (insert " <- ")
+  ;;      (evil-insert-state)
+  ;;      )))
   ;; Move lines around
   ;; (spacemacs/set-leader-keys "MS" 'move-text-line-up)
   ;; (spacemacs/set-leader-keys "MT" 'move-text-line-down)
@@ -409,7 +407,7 @@ you should place your code here."
   (setq-default indent-tabs-mode nil)
   (setq-default standard-indent 2)
   (setq-default python-tab-width 4)
-  (setq ess-default-style 'Rstudio)
+  (setq-default ess-style 'RStudio)
   ;; Add eol rulers.
   (setq-default fill-column 80)
   (add-hook 'prog-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
@@ -417,7 +415,7 @@ you should place your code here."
   (add-hook 'markdown-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
   (add-hook 'python-mode-hook 'spacemacs/toggle-fill-column-indicator-on
             (set-fill-column 79))
-  (add-hook 'ess-mode-hook 'spacemacs/toggle-fill-column-indicator-on
+  (add-hook 'ess-r-mode-hook 'spacemacs/toggle-fill-column-indicator-on
             (set-fill-column 80))
   )
 
@@ -439,6 +437,6 @@ you should place your code here."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-(add-hook 'ess-mode-hook
+(add-hook 'ess-r-mode-hook
           (lambda ()
             (ess-toggle-underscore nil)))
