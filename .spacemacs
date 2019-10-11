@@ -334,9 +334,6 @@ you should place your code here."
   ;; R --------------------------------------------------------------------------
   (setq spacemacs/ess-config
         '(progn
-           ;; Follow Hadley Wickham's R style guide
-           (setq ess-nuke-trailing-whitespace-p t)
-
            (define-key ess-doc-map "h" 'ess-display-help-on-object)
            (define-key ess-doc-map "p" 'ess-R-dv-pprint)
            (define-key ess-doc-map "t" 'ess-R-dv-ctable)
@@ -430,6 +427,8 @@ you should place your code here."
             (set-fill-column 79))
   (add-hook 'ess-r-mode-hook 'spacemacs/toggle-fill-column-indicator-on
             (set-fill-column 80))
+  ;; Remove whitespace on save.
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
