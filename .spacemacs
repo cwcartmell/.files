@@ -331,40 +331,75 @@ you should place your code here."
   (global-company-mode t)
   (global-hl-line-mode 1) ; Enable/Disable current line highlight
   (setq-default auto-fill-mode t)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sb"
-    'ess-eval-buffer)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sB"
-    'ess-eval-buffer-and-go)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sd"
-    'ess-eval-line-and-step)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sD"
-    'ess-eval-region-or-function-or-paragraph-and-step)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "si" 'ess-R)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sl" 'ess-eval-line)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sL"
-    'ess-eval-line-and-go)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sr" 'ess-eval-region)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sR"
-    'ess-eval-region-and-go)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "st" 'ess-eval-function)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "sT"
-    'ess-eval-region-and-go)
-  ;; (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "C-j" 'ess-)
-  ;; (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "C-k" 'ess-)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "db"
-    'ess-r-devtools-build-package)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "dd"
-    'ess-r-devtools-document-package)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "dl"
-    'ess-r-devtools-load-package)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "dc"
-    'ess-r-devtools-check-package)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "dt"
-    'ess-r-devtools-test-package)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "dp" 'ess-r-package-mode)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "hi"
-    'ess-R-describe-object-at-point-commands)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "ht" 'ess-R-dv-ctable)
+  ;; R --------------------------------------------------------------------------
+  (setq spacemacs/ess-config
+        '(progn
+           ;; Follow Hadley Wickham's R style guide
+           (setq ess-nuke-trailing-whitespace-p t)
+
+           (define-key ess-doc-map "h" 'ess-display-help-on-object)
+           (define-key ess-doc-map "p" 'ess-R-dv-pprint)
+           (define-key ess-doc-map "t" 'ess-R-dv-ctable)
+           (dolist (mode '(ess-julia-mode ess-r-mode))
+             (spacemacs/declare-prefix-for-mode mode "ms" "repl")
+             (spacemacs/declare-prefix-for-mode mode "mh" "help")
+             (spacemacs/declare-prefix-for-mode mode "mr" "extra")
+             (spacemacs/declare-prefix-for-mode mode "mw" "pkg")
+             (spacemacs/declare-prefix-for-mode mode "md" "dev")
+             (spacemacs/declare-prefix-for-mode mode "mc" "noweb")
+             (spacemacs/set-leader-keys-for-major-mode
+               mode
+               ","  'ess-eval-region-or-function-or-paragraph-and-step
+               "'"  'spacemacs/ess-start-repl
+               "si" 'spacemacs/ess-start-repl
+               "ss" 'ess-switch-to-inferior-or-script-buffer
+               "sS" 'ess-switch-process
+               ;; REPL
+               "sB" 'ess-eval-buffer-and-go
+               "sb" 'ess-eval-buffer
+               "sd" 'ess-eval-region-or-line-and-step
+               "sD" 'ess-eval-function-or-paragraph-and-step
+               "sL" 'ess-eval-line-and-go
+               "sl" 'ess-eval-line
+               "sR" 'ess-eval-region-and-go
+               "sr" 'ess-eval-region
+               "sF" 'ess-eval-function-and-go
+               "sf" 'ess-eval-function
+               ;; predefined keymaps
+               "h" 'ess-doc-map
+               "r" 'ess-extra-map
+               "w" 'ess-r-package-dev-map
+               "d" 'ess-dev-map
+               ;; noweb
+               "cC" 'ess-eval-chunk-and-go
+               "cc" 'ess-eval-chunk
+               "cd" 'ess-eval-chunk-and-step
+               "cm" 'ess-noweb-mark-chunk
+               "cN" 'ess-noweb-previous-chunk
+               "cn" 'ess-noweb-next-chunk))
+           (dolist (mode '(inferior-ess-mode))
+             (spacemacs/declare-prefix-for-mode mode "ms" "repl")
+             (spacemacs/declare-prefix-for-mode mode "me" "eval")
+             (spacemacs/declare-prefix-for-mode mode "mg" "xref")
+             (spacemacs/declare-prefix-for-mode mode "mh" "help")
+             (spacemacs/declare-prefix-for-mode mode "mr" "extra")
+             (spacemacs/declare-prefix-for-mode mode "mw" "pkg")
+             (spacemacs/declare-prefix-for-mode mode "md" "dev")
+             (spacemacs/set-leader-keys-for-major-mode
+               mode
+               ","  'ess-smart-comma
+               "ss" 'ess-switch-to-inferior-or-script-buffer
+               ;; predefined keymaps
+               "h" 'ess-doc-map
+               "r" 'ess-extra-map
+               "w" 'ess-r-package-dev-map
+               "d" 'ess-dev-map))
+           (define-key ess-mode-map (kbd "<s-return>") 'ess-eval-line)
+           (define-key inferior-ess-mode-map (kbd "C-j") 'comint-next-input)
+           (define-key inferior-ess-mode-map (kbd "C-k") 'comint-previous-input)))
+
+  (eval-after-load "ess-r-mode" spacemacs/ess-config)
+  (eval-after-load "ess-julia" spacemacs/ess-config)
   (defun pipe ()
     (interactive)
     (forward-char)
