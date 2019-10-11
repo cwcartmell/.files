@@ -411,29 +411,7 @@ you should place your code here."
     (insert " <- ")
     (evil-insert-state))
   (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "a" 'assignment)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "m" 'pipe)
-  ;; (add-hook
-  ;;  'ess-r-mode
-  ;;  ;; Default shortcuts from the docs.
-  ;;  (define-key evil-normal-state-map (kbd "SPC mm")
-  ;;    (defun pipe ()
-  ;;      (interactive)
-  ;;      (forward-char)
-  ;;      (insert " %>% ")
-  ;;      (evil-insert-state))))
-
-  ;; (add-hook
-  ;;  'ess-r-mode
-  ;;  (define-key evil-normal-state-map (kbd "SPC ma")
-  ;;    (defun assignment ()
-  ;;      (interactive)
-  ;;      (forward-char)
-  ;;      (insert " <- ")
-  ;;      (evil-insert-state)
-  ;;      )))
-  ;; Move lines around
-  ;; (spacemacs/set-leader-keys "MS" 'move-text-line-up)
-  ;; (spacemacs/set-leader-keys "MT" 'move-text-line-down)
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "m" 'pipe) 
   (setq-default TeX-view-program-selection
                 '((output-pdf "PDF Viewer")))
   (setq-default TeX-view-program-list
