@@ -407,8 +407,14 @@ you should place your code here."
     (forward-char)
     (insert " <- ")
     (evil-insert-state))
+  (defun r-dash-to-80 ()
+    (interactive)
+    (forward-char)
+    (insert (concat " " (make-string (- 79 (current-column)) ?-)))
+    (evil-insert-state))
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "el" 'r-dash-to-80)
   (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "a" 'assignment)
-  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "m" 'pipe) 
+  (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "m" 'pipe)
   (setq-default TeX-view-program-selection
                 '((output-pdf "PDF Viewer")))
   (setq-default TeX-view-program-list
