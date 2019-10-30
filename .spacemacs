@@ -431,15 +431,16 @@ you should place your code here."
   (setq-default standard-indent 2)
   (setq-default python-tab-width 4)
   (setq-default ess-style 'RStudio)
-  ;; Add eol rulers.
+  ;; Add eol rulers.'
   (setq-default fill-column 80)
   (add-hook 'prog-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
   (add-hook 'text-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
   (add-hook 'markdown-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
   (add-hook 'python-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
-  (add-hook 'python-mode-hook (lambda () (set-fill-column 88)))
+  (setq-default python-fill-column 88)
   (add-hook 'ess-r-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
-  (add-hook 'ess-r-mode-hook (lambda () (set-fill-column 80)))
+  (defun ess-r-fill-column () (setq-local fill-column 80))
+  (add-hook 'ess-r-mode-hook 'ess-r-fill-column)
   ;; Remove whitespace on save.
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
   )
