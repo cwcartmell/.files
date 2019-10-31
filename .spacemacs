@@ -319,7 +319,7 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
   ;; Set default theme.
-  (setq-default dotspacemacs-themes '(solarized-dark, solarized-light))
+  (setq-default dotspacemacs-themes '(solarized-dark solarized-light))
 
   ;; Turn on spellchecking
   (setq-default dotspacemacs-configuration-layers
@@ -404,6 +404,9 @@ you should place your code here."
 
   (eval-after-load "ess-r-mode" spacemacs/ess-config)
   (eval-after-load "ess-julia" spacemacs/ess-config)
+
+  ;; Define R insertion shortcuts.
+
   (defun pipe ()
     (interactive)
     (forward-char)
@@ -419,9 +422,17 @@ you should place your code here."
     (forward-char)
     (insert (concat " " (make-string (- 79 (current-column)) ?-)))
     (evil-insert-state))
+
   (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "el" 'r-dash-to-80)
   (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "a" 'assignment)
   (spacemacs/set-leader-keys-for-major-mode 'ess-r-mode "m" 'pipe)
+
+  ;; Set options to keep popup menus from appearing.
+  (defun my-R-exec-options ()
+    (ess-command "options(menu.graphics = FALSE)\n"))
+  (add-hook 'ess-R-post-run-hook 'my-R-exec-options)
+
+
   (setq-default TeX-view-program-selection
                 '((output-pdf "PDF Viewer")))
   (setq-default TeX-view-program-list
