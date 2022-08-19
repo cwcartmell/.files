@@ -11,8 +11,13 @@ autocmd InsertEnter,InsertLeave * set cul!
 set shiftwidth=2
 set softtabstop=2
 set tabstop=2
+set expandtab
+
 
 " Pyhton Settings
 autocmd Filetype python setlocal shiftwidth=4 softtabstop=4 tabstop=4 expandtab  " Tabs
 autocmd Filetype python setlocal colorcolumn=79,88,100  " Rulers: PEP8, black, max.
+
+" Make Settings
+autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
 
